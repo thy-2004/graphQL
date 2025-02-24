@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsController } from './products/products.controller';
 import { ProductsModule } from './products/products.module';
 import Product from './products/product.entity';
+import { Categoty } from './products/category.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import Product from './products/product.entity';
       username: 'root',
       password: 'password',
       database: 'demonestIT22D',
-      entities: [Product],
+      entities: [Product, Categoty],
       synchronize: true,
     }),
     UsersModule,
