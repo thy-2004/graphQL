@@ -8,6 +8,8 @@ import { ProductsController } from './products/products.controller';
 import { ProductsModule } from './products/products.module';
 import Product from './products/product.entity';
 import { Categoty } from './products/category.entity';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   imports: [
@@ -21,6 +23,10 @@ import { Categoty } from './products/category.entity';
       database: 'demonestIT22D',
       entities: [Product, Categoty],
       synchronize: true,
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: true,
     }),
     UsersModule,
     ProductsModule,
