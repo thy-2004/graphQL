@@ -13,9 +13,10 @@ export class ProductsService {
     return this.productRepository.find();
   }
 
-  public getOne() {
-    return this.productRepository.findOne({ where: { id: 7 } });
+  public getOne(id: number) {
+    return this.productRepository.findOne({ where: { id } });
   }
+
   public async create(product: ProductParams) {
     // const product = await this.productRepository.findOne({
     //   where: {
@@ -23,11 +24,11 @@ export class ProductsService {
     //   },
     // });
     // return await this.productRepository.delete(1);
-    // const product = new Product();
-    // product.name = 'abc';
-    // product.description = '4535454';
-    // product.image = '6565';
-    // product.price = '56565';
+    // const productNew = new Product();
+    // productNew.name = product.name;
+    // productNew.description = product.description;
+    // productNew.image = '6565';
+    // productNew.price = '56565';
 
     return this.productRepository.save(product);
   }
@@ -43,5 +44,11 @@ export class ProductsService {
     product.price = params.price;
     product.image = params.image;
     return this.productRepository.save(product);
+  }
+
+  public async delete(id: number) {
+    const product = await this.productRepository.findOne({ where: { id } });
+    this.productRepository.delete({ id });
+    return product;
   }
 }

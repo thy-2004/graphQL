@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Render,
-  Put,
-  Post,
-  Body,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Put, Post, Body, Param } from '@nestjs/common';
 import { ProductsService } from './products.service';
 
 export interface ProductParams {
