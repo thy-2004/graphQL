@@ -1,19 +1,26 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn,JoinColumn } from 'typeorm';
+import { Category } from './category.entity';
 
-@Entity('products')
-export default class Product {
+@ObjectType()
+@Entity()
+export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
 
+  @Column('float')
+  price: number;
+
   @Column()
   description: string;
 
   @Column()
-  image: string;
+  categoryId: number; // Đảm bảo là kiểu number
 
-  @Column()
-  price: string;
+  @ManyToOne(() => Category, (category) => category.products)
+  @JoinColumn({ name: 'categoryId' }) 
+  category: Category;
 }

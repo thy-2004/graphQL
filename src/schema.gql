@@ -3,19 +3,35 @@
 # ------------------------------------------------------
 
 type ProductModel {
-  id: Int!
+  id: ID!
   name: String!
+  price: Float!
   description: String!
-  image: String!
-  price: String!
+  categoryId: ID!
 }
 
 type Query {
-  getProduct: [ProductModel!]!
-  getoneProduct(id: Float!): ProductModel!
+  products: [ProductModel!]!
+  product(id: ID!): ProductModel!
 }
 
 type Mutation {
-  createProduct(name: String!, description: String!, image: String!, price: String!): ProductModel!
-  deleteProduct(id: Float!): ProductModel!
+  createProduct(data: CreateProductInput!): ProductModel!
+  updateProduct(id: ID!, data: UpdateProductInput!): ProductModel!
+  deleteProduct(id: ID!): Boolean!
+}
+
+input CreateProductInput {
+  name: String!
+  price: Float!
+  description: String!
+  categoryId: ID!
+}
+
+input UpdateProductInput {
+  id: ID!
+  name: String
+  price: Float
+  description: String
+  categoryId: ID
 }

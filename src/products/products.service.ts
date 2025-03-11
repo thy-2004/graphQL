@@ -1,54 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import Product from './product.entity';
-import { ProductParams } from './products.controller';
+import { Product } from './product.entity';
+import { CreateProductInput, UpdateProductInput } from './product.model';
 
 @Injectable()
 export class ProductsService {
-  constructor(
-    @InjectRepository(Product) private productRepository: Repository<Product>,
-  ) {}
-  public getAll(): Promise<Product[]> {
-    return this.productRepository.find();
+  constructor(@InjectRepository(Product) private productRepo: Repository<Product>) {}
+
+  async findAll(): Promise<Product[]> {
+    return this.productRepo.find({ relations: ['category'] });
   }
 
-  public getOne(id: number) {
-    return this.productRepository.findOne({ where: { id } });
-  }
-
-  public async create(product: ProductParams) {
-    // const product = await this.productRepository.findOne({
-    //   where: {
-    //     id: 1,
-    //   },
-    // });
-    // return await this.productRepository.delete(1);
-    // const productNew = new Product();
-    // productNew.name = product.name;
-    // productNew.description = product.description;
-    // productNew.image = '6565';
-    // productNew.price = '56565';
-
-    return this.productRepository.save(product);
-  }
-  public async update(params: ProductParams, id: number) {
-    const product = await this.productRepository.findOne({
-      where: {
-        id,
-      },
-    });
-    console.log(product);
-    product.description = params.description;
-    product.name = params.name;
-    product.price = params.price;
-    product.image = params.image;
-    return this.productRepository.save(product);
-  }
-
-  public async delete(id: number) {
-    const product = await this.productRepository.findOne({ where: { id } });
-    this.productRepository.delete({ id });
+  async findById(id: number): Promise<Product> {
+    const product = await this.productRepo.findOne({ where: { id }, relations: ['category'] });
+    if (!product) throw new NotFoundException('Product not found');
     return product;
+  }
+
+  async create(input: CreateProductInput): Promise<Product> {
+    const newProduct = this.productRepo.create({
+      ...input,
+      categoryId: Number(input.categoryId), // Chuyển đổi categoryId sang number
+    });
+    return this.productRepo.save(newProduct);
+  }
+
+  async update(id: number, input: UpdateProductInput): Promise<Product> {
+    await this.productRepo.update(id, {
+      ...input,
+      categoryId: input.categoryId ? Number(input.categoryId) : undefined, // Chuyển đổi nếu có
+    });
+    return this.findById(id);
+  }
+
+  async delete(id: number): Promise<boolean> {
+    const result = await this.productRepo.delete(id);
+    return result.affected > 0;
   }
 }

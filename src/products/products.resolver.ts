@@ -1,38 +1,39 @@
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { ProductModel, CreateProductInput, UpdateProductInput } from './product.model';
 import { ProductsService } from './products.service';
-import ProductModel from './product.model';
 
-@Resolver()
+@Resolver(() => ProductModel)
 export class ProductsResolver {
-  constructor(private productService: ProductsService) {}
-  @Query(() => [ProductModel])
-  async getProduct() {
-    return this.productService.getAll();
-  }
+  constructor(private readonly productsService: ProductsService) {}
 
-  @Query(() => ProductModel)
-  async getoneProduct(@Args('id') id: number) {
-    return this.productService.getOne(id);
+  @Query(() => [ProductModel], { name: 'products' })
+  async findAll() {
+    return this.productsService.findAll();
+  }
+@Query(() => ProductModel, { name: 'getoneProduct' }) 
+async findById(@Args('id', { type: () => ID }) id: number) {
+  return this.productsService.findById(id);
+}
+
+  
+
+  @Mutation(() => ProductModel)
+  async createProduct(@Args('data') data: CreateProductInput) {
+    return this.productsService.create(data);
   }
 
   @Mutation(() => ProductModel)
-  async createProduct(
-    @Args('name') name: string,
-    @Args('description') description: string,
-    @Args('image') image: string,
-    @Args('price') price: string,
+  async updateProduct(
+    @Args('id', { type: () => ID }) id: number, // Đổi string → number
+    @Args('data') data: UpdateProductInput
   ) {
-    const params = {
-      name,
-      description,
-      image,
-      price,
-    };
-    return this.productService.create(params);
+    return this.productsService.update(id, data);
   }
+  
+  
 
-  @Mutation(() => ProductModel)
-  async deleteProduct(@Args('id') id: number) {
-    return this.productService.delete(id);
+  @Mutation(() => Boolean)
+  async deleteProduct(@Args('id', { type: () => ID }) id: number) {
+    return this.productsService.delete(id);
   }
 }

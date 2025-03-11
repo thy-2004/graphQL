@@ -1,36 +1,32 @@
-import { Controller, Get, Put, Post, Body, Param } from '@nestjs/common';
+import { 
+  Controller, Get, Put, Post, Body, Param, BadRequestException, ParseIntPipe 
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
-
-export interface ProductParams {
-  name: string;
-  description: string;
-  image: string;
-  price: string;
-}
+import { UpdateProductInput } from './dto/update-product.input';
+import { CreateProductInput } from './dto/create-product.input';
 
 @Controller('products')
 export class ProductsController {
   constructor(private productService: ProductsService) {}
-  @Get('')
+
+  // Lấy danh sách sản phẩm
+  @Get()
   public async index() {
-    const products = await this.productService.getAll();
-    return { products };
-  }
-  @Put('update/:id')
-  public async update(@Body() body: ProductParams, @Param('id') id: number) {
-    console.log(body);
-
-    const product = await this.productService.update(body, id);
-
-    return { message: 'Update thành công!!!', product };
+    return { products: await this.productService.findAll() };
   }
 
-  @Post('create')
-  public async create(@Body() body: ProductParams) {
-    console.log(body);
+  // Cập nhật sản phẩm
+  @Put(':id')
+  async updateProduct(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() body: UpdateProductInput
+  ) {
+    return await this.productService.update(id, body);
+  }
 
-    const product = await this.productService.create(body);
-
-    return { message: 'Tạo mới thành công!!!', product };
+  // Tạo sản phẩm mới
+  @Post()
+  async createProduct(@Body() body: CreateProductInput) {
+    return await this.productService.create(body);
   }
 }
