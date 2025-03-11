@@ -1,19 +1,16 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, Float, Int, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateProductInput {
-  @Field()
-  id: number;
-
-  @Field()
+  @Field({ nullable: true })
   name?: string;
 
-  @Field()
+  @Field(() => Float, { nullable: true })
   price?: number;
 
-  @Field()
+  @Field({ nullable: true })
   description?: string;
 
-  @Field()
+  @Field(() => Int, { nullable: true }) // Sửa từ ID (string) thành Int (number)
   categoryId?: number;
 }

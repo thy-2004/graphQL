@@ -1,10 +1,10 @@
-import { Field, Float, ID, InputType, ObjectType } from '@nestjs/graphql';
-import { CategoryModel } from 'src/categories/category.model'
+import { Field, Float, Int, InputType, ObjectType } from '@nestjs/graphql';
+import { CategoryModel } from 'src/categories/category.model';
 
 @ObjectType()
 export class ProductModel {
-  @Field(() => ID)
-  id: string;
+  @Field(() => Int) // Thay ID bằng Int nếu database lưu categoryId là number
+  id: number;
 
   @Field()
   name: string;
@@ -15,8 +15,8 @@ export class ProductModel {
   @Field()
   description: string;
 
-  @Field(() => ID)
-  categoryId: string;
+  @Field(() => Int) // Thay ID bằng Int
+  categoryId: number;
 
   @Field(() => CategoryModel, { nullable: true }) 
   category?: CategoryModel;
@@ -33,8 +33,8 @@ export class CreateProductInput {
   @Field()
   description: string;
 
-  @Field(() => ID)
-  categoryId: string;
+  @Field(() => Int) // Thay ID bằng Int
+  categoryId: number;
 }
 
 @InputType()
@@ -48,7 +48,6 @@ export class UpdateProductInput {
   @Field({ nullable: true })
   description?: string;
 
-  @Field(() => ID)
-  categoryId: string;
-  
+  @Field(() => Int, { nullable: true }) // Thay ID bằng Int
+  categoryId?: number;
 }

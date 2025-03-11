@@ -2,17 +2,24 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ProductModel {
+type CategoryModel {
   id: ID!
+  name: String!
+  products: [ProductModel!]
+}
+
+type ProductModel {
+  id: Int!
   name: String!
   price: Float!
   description: String!
-  categoryId: ID!
+  categoryId: Int!
+  category: CategoryModel
 }
 
 type Query {
   products: [ProductModel!]!
-  product(id: ID!): ProductModel!
+  getoneProduct(id: ID!): ProductModel!
 }
 
 type Mutation {
@@ -25,13 +32,12 @@ input CreateProductInput {
   name: String!
   price: Float!
   description: String!
-  categoryId: ID!
+  categoryId: Int!
 }
 
 input UpdateProductInput {
-  id: ID!
   name: String
   price: Float
   description: String
-  categoryId: ID
+  categoryId: Int
 }

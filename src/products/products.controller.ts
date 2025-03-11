@@ -21,7 +21,7 @@ export class ProductsController {
     @Param('id', ParseIntPipe) id: number, 
     @Body() body: UpdateProductInput
   ) {
-    return await this.productService.update(id, body);
+    return await this.productService.update(id,body);
   }
 
   // Tạo sản phẩm mới
